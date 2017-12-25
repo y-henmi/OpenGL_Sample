@@ -1,6 +1,7 @@
-package com.hemmi.gles2sample01;
+package com.hemmi.opengl2sample01;
 
 import android.app.Activity;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.Menu;

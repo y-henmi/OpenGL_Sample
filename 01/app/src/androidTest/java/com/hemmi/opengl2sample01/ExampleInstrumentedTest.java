@@ -1,4 +1,4 @@
-package com.hemmi.gles2sample01;
+package com.hemmi.opengl2sample01;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.hemmi.gles2sample01", appContext.getPackageName());
+        assertEquals("com.hemmi.opengl2sample01", appContext.getPackageName());
     }
 }

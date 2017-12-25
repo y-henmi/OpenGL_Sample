@@ -1,4 +1,4 @@
-package com.hemmi.gles2sample01;
+package com.hemmi.opengl2sample01;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

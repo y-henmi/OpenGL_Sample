@@ -135,7 +135,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
         //MyCubeの描画
         Matrix.setIdentityM(mMatrix, 0);  //ここではすでに設定されているので省略可
-        Matrix.rotateM(mMatrix, 0, angle * 2, 0, 1, 0);
+        Matrix.rotateM(mMatrix, 0, angle * 2, 1, 1, 1);
         Matrix.scaleM(mMatrix, 0, 0.6f, 0.6f, 0.6f);
         GLES.updateMatrix(mMatrix);//現在の変換行列をシェーダに指定
         //MyCubeの描画本体
