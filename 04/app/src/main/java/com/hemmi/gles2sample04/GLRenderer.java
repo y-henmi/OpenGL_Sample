@@ -1,4 +1,4 @@
-package com.hemmi.gles2sample02;
+package com.hemmi.gles2sample04;
 
 import android.content.Context;
 import android.opengl.GLES20;
@@ -16,7 +16,7 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class GLRenderer implements GLSurfaceView.Renderer {
     //システム
-    private final Context mContext;
+    private Context mContext = null;
     private boolean validProgram=false; //シェーダプログラムが有効
     private float aspect;//アスペクト比
     private float viewlength = 5.0f; //視点距離
@@ -35,12 +35,14 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
     private Axes MyAxes= new Axes();  //原点周囲の軸表示とためのオブジェクトを作成
     private Cube MyCube = new Cube(); //原点に，外接球半径１の立方体オブジェクトを作成
+    private Circle MyCircle =new Circle(64); //zx平面の原点に，半径１の円オブジェクト(64分割)を作成
+    private Sphere MySphere=new Sphere(40,20, mContext); //原点に，半径１の球体オブジェクト（40スライス，20スタック）を作成
 
     //シェーダのattribute属性の変数に値を設定していないと暴走するのでそのための準備
     private static float[] DummyFloat= new float[1];
     private static final FloatBuffer DummyBuffer=BufferUtil.makeFloatBuffer(DummyFloat);
 
-    GLRenderer(final Context context) {
+    GLRenderer(Context context) {
         mContext = context;
     }
 
@@ -117,7 +119,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
                 (float) (viewlength * Math.cos(beta) * Math.cos(alph)),  //カメラの視点 z
                 0.0f, 0.0f, 0.0f, //カメラの視線方向の代表点
                 0.0f, 1.0f, 0.0f);//カメラの上方向
-        //カメラ視点ビュー変換はこれで終わり。
+        //カメラビュー変換はこれで終わり。
         GLES.setCMatrix(cMatrix);
 
         //cMatrixをセットしてから光源位置をセット
@@ -133,14 +135,68 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         MyAxes.draw(1f, 1f, 1f, 1f, 10.f, 2f);//座標軸の描画本体
         GLES.enableShading(); //シェーディング機能を使う設定に戻す
 
-        //MyCubeの描画
-        Matrix.setIdentityM(mMatrix, 0);  //ここではすでに設定されているので省略可
-        Matrix.rotateM(mMatrix, 0, angle * 2, 0, 1, 0);
-        Matrix.scaleM(mMatrix, 0, 0.6f, 0.6f, 0.6f);
+//        //MyCubeの描画
+//        Matrix.setIdentityM(mMatrix, 0);  //ここではすでに設定されているので省略可
+//        Matrix.rotateM(mMatrix, 0, angle, 0, 1, 0);
+//        Matrix.translateM(mMatrix, 0, 0f, 0f, 1.2f);
+//        Matrix.rotateM(mMatrix, 0, angle * 2, 0, 1, 0);
+//        Matrix.scaleM(mMatrix, 0, 0.4f, 0.4f, 0.4f);
+//        GLES.updateMatrix(mMatrix);//現在の変換行列をシェーダに指定
+//        //MyCubeの描画本体
+//        // r, g, b, a, shininess(1以上の値　大きな値ほど鋭くなる)
+//        MyCube.draw(0f, 1f, 0f, 1f, 20.f);
+
+        //円の描画
+        GLES.disableShading(); //シェーディング機能は使わない
+        Matrix.setIdentityM(mMatrix, 0);
+        Matrix.scaleM(mMatrix, 0, 1.2f, 1.2f, 1.2f);
         GLES.updateMatrix(mMatrix);//現在の変換行列をシェーダに指定
-        //MyCubeの描画本体
+        //円の描画本体
+        // r, g, b, a, shininess(1以上の値　大きな値ほど鋭くなる), linewidth
+        //shininessは使用していない
+        MyCircle.draw(1f, 1f, 0.1f, 1f, 10.f, 1f);
+        GLES.enableShading(); //シェーディング機能を使う設定に戻す
+
+        //円の描画
+        GLES.disableShading(); //シェーディング機能は使わない
+        Matrix.setIdentityM(mMatrix, 0);
+        Matrix.scaleM(mMatrix, 0, .8f, .8f, .8f);
+        GLES.updateMatrix(mMatrix);//現在の変換行列をシェーダに指定
+        //円の描画本体
+        // r, g, b, a, shininess(1以上の値　大きな値ほど鋭くなる), linewidth
+        //shininessは使用していない
+        MyCircle.draw(1f, 1f, 0.1f, 1f, 10.f, 1f);
+        GLES.enableShading(); //シェーディング機能を使う設定に戻す
+
+        //MySphereの描画
+        Matrix.setIdentityM(mMatrix, 0);
+        Matrix.rotateM(mMatrix, 0, 1.5f * angle, 0, 1, 0);
+        Matrix.translateM(mMatrix, 0, 0.8f, 0f, 0f);
+        Matrix.scaleM(mMatrix, 0, 0.2f, 0.2f, 0.2f);
+        GLES.updateMatrix(mMatrix);//現在の変換行列をシェーダに指定
+        //MySphereの描画本体
         // r, g, b, a, shininess(1以上の値　大きな値ほど鋭くなる)
-        MyCube.draw(0f, 1f, 0f, 1f, 20.f);
+        MySphere.draw(0f, 1f, 1f, 1f, 5.f, mContext);
+
+        //MySphereの描画
+        Matrix.setIdentityM(mMatrix, 0);
+        Matrix.rotateM(mMatrix, 0, 1.5f*angle, 0, 1, 0);
+        Matrix.translateM(mMatrix, 0, -0.8f, 0f, 0f);
+        Matrix.scaleM(mMatrix, 0, 0.2f, 0.2f, 0.2f);
+        GLES.updateMatrix(mMatrix);//現在の変換行列をシェーダに指定
+        //MySphereの描画本体
+        // r, g, b, a, shininess(1以上の値　大きな値ほど鋭くなる)
+        MySphere.draw(1f, .7f, .7f, 1f, 5.f, mContext);
+
+        //MySphereの描画
+        Matrix.setIdentityM(mMatrix, 0);
+        Matrix.rotateM(mMatrix, 0, 1.5f*angle, 0, 1, 0);
+        Matrix.translateM(mMatrix, 0, 0f, 0f, 0.8f);
+        Matrix.scaleM(mMatrix, 0, 0.2f, 0.2f, 0.2f);
+        GLES.updateMatrix(mMatrix);//現在の変換行列をシェーダに指定
+        //MySphereの描画本体
+        // r, g, b, a, shininess(1以上の値　大きな値ほど鋭くなる)
+        MySphere.draw(0.8f, .2f, 1f, 0.5f, 5.f, mContext);
 
         angle+=0.5;
 

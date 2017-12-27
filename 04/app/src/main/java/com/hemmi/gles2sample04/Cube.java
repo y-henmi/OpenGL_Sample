@@ -1,4 +1,4 @@
-package com.hemmi.gles2sample02;
+package com.hemmi.gles2sample04;
 
 import android.opengl.GLES20;
 
@@ -43,7 +43,7 @@ public class Cube {
     };
     //頂点座標番号列
     private byte[] indexs= {
-            1,0,3,2, //第0面
+            0,1,2,3, //第0面
             4,5,6,7, //第1面
             8,9,10,11, //第2面
             12,13,14,15, //第3面
